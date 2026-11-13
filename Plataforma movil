@@ -1,0 +1,28 @@
+extends AnimatableBody2D
+
+@export var punto1: Marker2D
+@export var punto2: Marker2D
+@export var velocidad: float = 50.0
+
+var objetivo: Marker2D
+
+func _ready() -> void:
+	if punto1 and punto2:
+		global_position = punto1.global_position
+		objetivo = punto2
+	else:
+		print("No pusieron los puntos en el inspector")
+
+func _physics_process(delta: float) -> void:
+	if not punto1 or not punto2:
+		return
+	
+	# Nos movemos hacia el otro punto
+	global_position = global_position.move_toward(objetivo.global_position, velocidad * delta)
+	
+	# Si ya llegó al objetivo, cambia al otro punto
+	if global_position == objetivo.global_position:
+		if objetivo == punto1:
+			objetivo = punto2
+		else:
+			objetivo = punto1

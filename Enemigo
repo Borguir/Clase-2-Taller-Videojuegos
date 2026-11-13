@@ -1,0 +1,35 @@
+extends CharacterBody2D
+
+#Para crear el @onready arrastrando el nodo RayCast2D tienen que presionar control 
+#mientras lo sueltan
+
+@onready var derecha: RayCast2D = $Derecha
+@onready var izquierda: RayCast2D = $Izquierda
+
+var vida = 1
+var velocidad = 200.0
+var direccion = 1
+
+func _physics_process(delta: float) -> void:
+	
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+	
+	velocity.x = velocidad * direccion
+	
+	if derecha.is_colliding():
+		direccion = -1
+	if izquierda.is_colliding():
+		direccion = 1
+	
+	move_and_slide()
+
+
+func _on_hitbox_body_entered(body: Node2D) -> void:
+	if body.is_in_group("Player"):
+		body.morir()
+
+func recibir_daño():
+	vida -= 1
+	if vida <= 0:
+		queue_free()

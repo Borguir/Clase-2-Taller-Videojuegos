@@ -1,0 +1,24 @@
+extends CharacterBody2D
+
+var velocidad := 200.0
+var incr_vel := 1.08
+var velocidad_actual: float
+
+func _ready() -> void:
+	reset()
+
+func reset() -> void:
+	var pantalla := get_viewport_rect().size
+	position = pantalla / 2.0
+	velocidad_actual = velocidad
+	
+	var dir_x := -1.0
+	var dir_y := randf_range(-0.6, 0.6)
+	velocity = Vector2(dir_x, dir_y).normalized() * velocidad_actual
+
+func _physics_process(delta: float) -> void:
+	var colision := move_and_collide(velocity * delta)
+	if colision:
+		velocity = velocity.bounce(colision.get_normal())
+		velocidad_actual *= incr_vel
+		velocity = velocity.normalized() * velocidad_actual
